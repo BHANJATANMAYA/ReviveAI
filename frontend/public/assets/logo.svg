@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 50" fill="none">
+  <rect width="220" height="50" rx="8" fill="#000000"/>
+  <text x="12" y="36" font-family="'Space Grotesk', 'Inter', -apple-system, sans-serif" font-weight="900" font-size="36" letter-spacing="-1.5px" fill="#ffffff">
+    reviveai<tspan fill="#ff4500">.</tspan>
+  </text>
+</svg>
