@@ -121,14 +121,3 @@ $$\text{ROI Multiplier} = \frac{\text{Total Recovered Revenue (₹)}}{\text{Auto
 
 *Operational cost is modeled at ₹3.50 per autonomous intervention, delivering $> 48\times$ hard ROI.*
 
----
-
-## 🏆 Razorpay Buildathon Submission Checklist
-
-- [x] **Track 3: AI Revenue Recovery Alignment**
-- [x] **Razorpay API Integration (Payment Links `v1/payment_links`, Smart Retries, Orders)**
-- [x] **High-Aesthetic Editorial Dark UI (Truck'N Roll inspired)**
-- [x] **Live Chain-of-Thought Agent Studio**
-- [x] **Interactive Customer Recovery Portal Simulation**
-- [x] **Policy Guardrails & Audit Explainability**
-- [x] **Single-click Run Scripts & Comprehensive Documentation**

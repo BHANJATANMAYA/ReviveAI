@@ -7,6 +7,7 @@ import AgentConsole from './components/AgentConsole';
 import DiagnosticsChart from './components/DiagnosticsChart';
 import CustomerPortal from './components/CustomerPortal';
 import AuditTrailModal from './components/AuditTrailModal';
+import HowItWorks from './components/HowItWorks';
 import { api } from './services/api';
 import { Bot, Shield, CheckCircle2, ArrowRight, Zap, Layers, Lock, Cpu, Sparkles, Plus, Minus, ArrowUpRight, ArrowUp } from 'lucide-react';
 
@@ -115,28 +116,42 @@ export default function App() {
     {
       id: 0,
       title: "Adaptive Switch",
-      desc: "Instant routing to backup bank gateways when primary acquirers timeout."
+      desc: "Dynamic low-latency routing across Razorpay bank gateways and UPI rails when primary acquirers experience transient failure.",
+      image: "/assets/infra_switch.jpg",
+      tag: "01 / ROUTING INFRASTRUCTURE",
+      badge: "SUB-120MS FAILOVER"
     },
     {
       id: 1,
       title: "/ Autonomous Recovery",
-      desc: "Want to supercharge your checkout? We offer real-time AI failure diagnosis and individual multi-channel salvage.",
-      linkText: "Get started here"
+      desc: "Real-time AI diagnostic classification and autonomous multi-vector salvage engine for silent gateway declines.",
+      image: "/assets/infra_recovery.jpg",
+      tag: "02 / AGENT ORCHESTRATION",
+      badge: "CLOSED-LOOP AI",
+      linkText: "Run Autonomous Recovery Sweep →"
     },
     {
       id: 2,
       title: "Guardrail Vault",
-      desc: "Strict safety boundaries enforcing max retry limits and margin ceilings."
+      desc: "Strict cryptographic safety boundaries enforcing maximum retry frequency, VIP margin caps, and audit compliance.",
+      image: "/assets/infra_vault.jpg",
+      tag: "03 / POLICY SECURITY",
+      badge: "ZERO RISK VAULT"
     },
     {
       id: 3,
       title: "WhatsApp & SMS Nudges",
-      desc: "Personalized deep-link reminders for high-intent customer cart drop-offs."
+      desc: "Context-aware, high-conversion recovery links dispatched via verified messaging channels for user drop-offs.",
+      image: "/assets/infra_dispatch.jpg",
+      tag: "04 / MULTI-CHANNEL DISPATCH",
+      badge: "78.4% CONVERSION"
     }
   ];
 
+  const currentProgram = programs.find(p => p.id === activeProgram) || programs[0];
+
   return (
-    <div className="min-h-screen bg-[#080808] text-white flex flex-col selection:bg-[#ff4500] selection:text-black">
+    <div className="min-h-screen bg-[#050507] text-white flex flex-col selection:bg-[#ff4500] selection:text-black">
       
       {/* Navigation */}
       <Navbar
@@ -148,6 +163,8 @@ export default function App() {
         onInjectStream={handleInjectStream}
         isRefreshing={isRefreshing}
         metrics={metrics}
+        onTriggerBatch={handleTriggerBatch}
+        isBatchRunning={isBatchRunning}
       />
 
       {/* Main Content Area */}
@@ -157,18 +174,18 @@ export default function App() {
         {activeTab === 'dashboard' && (
           <div className="space-y-0">
             
-            {/* Dynamic Dribbble Hero */}
+            {/* Dynamic Hero */}
             <HeroBanner
               onTriggerBatch={handleTriggerBatch}
               isBatchRunning={isBatchRunning}
               metrics={metrics}
             />
 
-            {/* Dribbble Facility & Programs Layout Section */}
-            <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 hairline-b">
+            {/* Facility & Programs Layout Section */}
+            <section id="facility-programs" className="max-w-7xl mx-auto px-6 sm:px-12 py-16 hairline-b">
               <div className="flex items-center space-x-2 text-xs font-mono text-[#ff4500] uppercase tracking-wider mb-8">
                 <span className="w-2.5 h-2.5 bg-[#ff4500]"></span>
-                <span>Our facility and programs</span>
+                <span>Autonomous Infrastructure & Systems</span>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -181,21 +198,30 @@ export default function App() {
                       <div
                         key={prog.id}
                         onClick={() => setActiveProgram(prog.id)}
-                        className="cursor-pointer group pt-4 hairline-t first:border-t-0"
+                        className="cursor-pointer group pt-4 hairline-t first:border-t-0 transition-colors"
                       >
-                        <h3 className={`font-display text-2xl sm:text-3xl font-bold tracking-tight transition-colors ${
-                          isSelected ? 'text-[#ff4500]' : 'text-zinc-400 group-hover:text-white'
-                        }`}>
-                          {prog.title}
-                        </h3>
+                        <div className="flex items-center justify-between">
+                          <h3 className={`font-display text-2xl sm:text-3xl font-bold tracking-tight transition-colors ${
+                            isSelected ? 'text-[#ff4500]' : 'text-zinc-400 group-hover:text-white'
+                          }`}>
+                            {prog.title}
+                          </h3>
+                          <span className={`text-[10px] font-mono tracking-wider px-2 py-0.5 rounded border transition-colors ${
+                            isSelected
+                              ? 'text-[#ff4500] border-[#ff4500]/40 bg-[#ff4500]/10'
+                              : 'text-zinc-600 border-white/[0.05] group-hover:border-white/[0.15] group-hover:text-zinc-400'
+                          }`}>
+                            {prog.badge}
+                          </span>
+                        </div>
 
                         {isSelected && (
-                          <div className="mt-2 space-y-1 font-mono text-xs text-zinc-400 leading-relaxed">
+                          <div className="mt-2.5 space-y-2 font-mono text-xs text-zinc-400 leading-relaxed animate-in fade-in duration-200">
                             <p>{prog.desc}</p>
                             {prog.linkText && (
                               <button
                                 onClick={handleTriggerBatch}
-                                className="text-[#ff4500] font-bold underline underline-offset-4 pt-1 block"
+                                className="text-[#ff4500] font-bold underline underline-offset-4 pt-1 block cursor-pointer"
                               >
                                 {prog.linkText}
                               </button>
@@ -211,19 +237,40 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* Right Arched Stadium Card */}
+                {/* Right Interactive Architecture Visual Card */}
                 <div className="lg:col-span-6 relative">
-                  <div className="relative rounded-tl-[60px] rounded-br-[60px] rounded-tr-2xl rounded-bl-2xl overflow-hidden border-2 border-[#ff4500] aspect-[4/3] shadow-2xl shadow-[#ff4500]/10 group">
+                  <div className="relative rounded-2xl overflow-hidden border border-white/[0.12] aspect-[4/3] shadow-2xl bg-black group">
                     <img
-                      src="/assets/dribbble_facility.jpg"
-                      alt="ReviveAI Facility Hub"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      key={currentProgram.image}
+                      src={currentProgram.image}
+                      alt={currentProgram.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 animate-in fade-in zoom-in-95 duration-300"
                     />
                     
-                    {/* Rotated Vertical Badge */}
-                    <div className="absolute top-1/2 left-0 -translate-y-1/2 bg-[#ff4500] text-black font-mono font-black text-xs px-3 py-1 rounded-r-md -rotate-90 origin-bottom-left uppercase tracking-widest">
-                      reviveai.
+                    {/* Dark Smoked Gradient Overlays */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+
+                    {/* Top Right Status Badge */}
+                    <div className="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 font-mono text-[10px] text-zinc-300 flex items-center space-x-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ff4500] animate-ping"></span>
+                      <span>ACTIVE NODE</span>
                     </div>
+
+                    {/* Bottom Metadata Bar */}
+                    <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-3.5 rounded-xl border border-white/10 flex items-center justify-between font-mono text-xs">
+                      <div>
+                        <span className="text-[10px] text-[#ff4500] uppercase tracking-wider block font-bold">
+                          {currentProgram.tag}
+                        </span>
+                        <span className="text-white font-semibold text-sm">
+                          {currentProgram.title.replace('/', '').trim()}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-zinc-400 bg-white/[0.05] border border-white/[0.1] px-2.5 py-1 rounded">
+                        256-BIT ISOLATION
+                      </span>
+                    </div>
+
                   </div>
                 </div>
 
@@ -263,92 +310,92 @@ export default function App() {
             {/* Metric KPI Cards */}
             <MetricCards metrics={metrics} />
 
-            {/* Dribbble Dark Capsule Feature Section ("dive into the past" analog) */}
+            {/* Closed-Loop AI Recovery Engine Showcase */}
             <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16">
-              <div className="bg-[#0e0e0e] rounded-3xl p-8 sm:p-14 border border-zinc-800 relative overflow-hidden space-y-10">
+              <div className="bg-[#090909] rounded-3xl p-8 sm:p-14 border border-white/[0.08] relative overflow-hidden space-y-10 shadow-2xl">
                 
                 {/* Header Line */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <h2 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight">
-                    dive into the past - <br />
-                    <span className="text-zinc-500 font-normal">/ with</span> reviveai vintage collection.
+                    closed-loop recovery - <br />
+                    <span className="text-zinc-500 font-normal">/ with</span> dynamic razorpay execution.
                   </h2>
                   <div className="text-right text-xs font-mono text-zinc-500 uppercase">
-                    2026 ESSENTIALS <br />
-                    <span className="text-white font-bold">PRODUCT</span>
+                    2026 ARCHITECTURE <br />
+                    <span className="text-[#ff4500] font-bold">CORE ENGINE</span>
                   </div>
                 </div>
 
-                {/* Center Floating White Card & Deck Image */}
+                {/* Center Floating Card & Terminal Visual */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                   
                   <div className="md:col-span-6 flex justify-center">
                     <div className="bg-white text-black p-6 rounded-3xl max-w-sm w-full shadow-2xl space-y-4 font-mono">
                       <div className="flex items-center justify-between text-[11px] text-zinc-500">
-                        <span className="px-2 py-0.5 rounded bg-zinc-200 text-black font-bold uppercase">HOT DROP</span>
-                        <span>RZP_V4</span>
+                        <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold uppercase">LIVE TERMINAL</span>
+                        <span>RZP_V4_SECURE</span>
                       </div>
 
-                      <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-zinc-100 relative">
+                      <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-black relative">
                         <img
-                          src="/assets/dribbble_product.jpg"
-                          alt="Custom Vintage Deck"
-                          className="w-full h-full object-contain p-2 hover:scale-105 transition-transform"
+                          src="/assets/infra_terminal.jpg"
+                          alt="Razorpay Autonomous Recovery Terminal"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                         />
                       </div>
 
                       <div>
                         <h4 className="font-display font-black text-lg text-black">
-                          Multi-Route UPI Engine
+                          Multi-Route Smart Retry
                         </h4>
                         <div className="text-2xl font-black text-[#ff4500] mt-1">
-                          ₹49,900 <span className="text-xs text-zinc-500 font-normal">SALVAGED AVG</span>
+                          ₹49,900 <span className="text-xs text-zinc-500 font-normal">SALVAGED PEAK</span>
                         </div>
                       </div>
 
                       <p className="text-[11px] text-zinc-600 leading-snug">
-                        The elite ReviveAI UPI switch intercepts gateway disconnects and auto-recovers orders.
+                        The elite ReviveAI switch intercepts gateway timeouts and autonomously settles dropped orders.
                       </p>
 
                       <button
                         onClick={() => setActiveTab('portal')}
-                        className="w-full py-2.5 rounded-xl bg-black text-white font-bold text-xs uppercase tracking-wider hover:bg-zinc-800 transition-colors"
+                        className="w-full py-2.5 rounded-xl bg-black text-white font-bold text-xs uppercase tracking-wider hover:bg-zinc-800 transition-colors cursor-pointer"
                       >
-                        VIEW CHECKOUT LINK →
+                        SIMULATE CHECKOUT LINK →
                       </button>
                     </div>
                   </div>
 
                   <div className="md:col-span-6 space-y-6">
-                    <div className="text-xs font-mono text-zinc-400">
-                      <span className="text-[#ff4500]">LET'S DIVE IN -&gt;</span>
-                      <p className="mt-2 text-zinc-300">
-                        Featuring raw decline recovery from the past. We are adding new bank failure routes every week, keep checking back!
+                    <div className="text-xs font-mono text-zinc-400 space-y-2">
+                      <span className="text-[#ff4500] font-bold">AUTONOMOUS DISPATCH VECTORS -&gt;</span>
+                      <p className="text-zinc-300 leading-relaxed font-sans text-sm">
+                        Featuring real-time decline classification. ReviveAI deploys individual multi-channel recovery routes according to customer lifetime value (LTV) and risk profile.
                       </p>
                     </div>
 
                     {/* Filter Pills */}
                     <div className="flex flex-wrap gap-2 font-mono text-xs">
                       <span className="px-4 py-1.5 rounded-full bg-[#ff4500] text-black font-bold">
-                        [01] Essentials
+                        [01] Smart Retry
                       </span>
-                      <span className="px-4 py-1.5 rounded-full bg-zinc-900 text-zinc-300 hairline-border hover:text-white cursor-pointer">
-                        Vintage
+                      <span className="px-4 py-1.5 rounded-full bg-white/[0.04] text-zinc-300 border border-white/[0.08] hover:text-white cursor-pointer">
+                        WhatsApp 1-Click
                       </span>
-                      <span className="px-4 py-1.5 rounded-full bg-zinc-900 text-zinc-300 hairline-border hover:text-white cursor-pointer">
-                        By Batch
+                      <span className="px-4 py-1.5 rounded-full bg-white/[0.04] text-zinc-300 border border-white/[0.08] hover:text-white cursor-pointer">
+                        VIP Concession
                       </span>
-                      <span className="px-4 py-1.5 rounded-full bg-zinc-900 text-zinc-300 hairline-border hover:text-white cursor-pointer">
-                        Limited Editions
+                      <span className="px-4 py-1.5 rounded-full bg-white/[0.04] text-zinc-300 border border-white/[0.08] hover:text-white cursor-pointer">
+                        UPI Deep-Link
                       </span>
                     </div>
 
-                    <div className="pt-4 hairline-t flex items-center justify-between text-xs font-mono text-zinc-500">
-                      <span>Community & Storytelling</span>
+                    <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-zinc-500">
+                      <span>Zero Reputational Risk</span>
                       <span>•</span>
                       <span>High Conversion</span>
                       <span>•</span>
-                      <span>Sustainable ROI</span>
+                      <span>Hard ROI</span>
                     </div>
                   </div>
 
@@ -357,11 +404,11 @@ export default function App() {
               </div>
             </section>
 
-            {/* Dribbble Featured Operators & Numbers Section (matching "featured / (69+) artists.") */}
+            {/* Autonomous Recovery Hub & Telemetry Section */}
             <section className="max-w-7xl mx-auto px-6 sm:px-12 py-16 hairline-b">
               <div className="flex items-center space-x-2 text-xs font-mono text-[#ff4500] uppercase tracking-wider mb-8">
                 <span className="w-2.5 h-2.5 bg-[#ff4500]"></span>
-                <span>AI operators around the world</span>
+                <span>Autonomous Recovery Telemetry</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
@@ -369,32 +416,32 @@ export default function App() {
                 {/* Left Statement */}
                 <div className="md:col-span-4 space-y-4">
                   <h2 className="font-display font-black text-4xl sm:text-5xl text-white tracking-tight">
-                    featured <span className="text-[#ff4500]">/</span>
+                    telemetry <span className="text-[#ff4500]">/</span>
                   </h2>
 
                   <p className="text-sm font-mono text-zinc-300 leading-relaxed italic">
-                    “They always say time changes things, but you actually have to change them yourself.”
+                    “Every dropped checkout is a salvageable transaction. ReviveAI ensures zero revenue leakage across the entire payment stack.”
                   </p>
 
                   <button
                     onClick={() => setActiveTab('agent')}
-                    className="text-xs font-mono font-bold text-[#ff4500] hover:text-white uppercase flex items-center space-x-1 transition-colors underline underline-offset-4"
+                    className="text-xs font-mono font-bold text-[#ff4500] hover:text-white uppercase flex items-center space-x-1 transition-colors underline underline-offset-4 cursor-pointer"
                   >
-                    <span>SEE AGENT LOGS -&gt;</span>
+                    <span>SEE AGENT REASONING LOGS -&gt;</span>
                   </button>
                 </div>
 
-                {/* Center Arched Portrait Card */}
+                {/* Center Operations Hub Card */}
                 <div className="md:col-span-4 flex justify-center">
-                  <div className="relative rounded-t-[50px] rounded-b-2xl overflow-hidden border-2 border-[#ff4500] aspect-[3/4] max-w-xs w-full shadow-2xl group">
+                  <div className="relative rounded-2xl overflow-hidden border border-white/[0.12] aspect-[4/3] max-w-xs w-full shadow-2xl bg-black group">
                     <img
-                      src="/assets/dribbble_operator.jpg"
-                      alt="Pac Vinsen Recovery Lead"
+                      src="/assets/infra_recovery.jpg"
+                      alt="Autonomous Operations Hub"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-3 rounded-xl hairline-border font-mono">
-                      <span className="text-xs font-bold text-white block">/ Pac Vinsen</span>
-                      <span className="text-[10px] text-zinc-400">Lead Autonomous Recovery Ops</span>
+                    <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-white/10 font-mono">
+                      <span className="text-xs font-bold text-white block">/ Autonomous Telemetry Node</span>
+                      <span className="text-[10px] text-zinc-400">Live Razorpay Fleet Orchestration</span>
                     </div>
                   </div>
                 </div>
@@ -412,7 +459,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* Transactions Stream Table */}
+            {/* Transactions Stream Table (Compact Live Stream on Homepage) */}
             <div className="max-w-7xl mx-auto px-6 sm:px-12 py-16 space-y-12">
               <TransactionTable
                 transactions={transactions}
@@ -420,58 +467,70 @@ export default function App() {
                 onOpenPortal={handleOpenPortal}
                 onOpenAudit={(t) => setAuditTxn(t)}
                 isRecoveringId={recoveringId}
+                isCompact={true}
+                onViewAll={() => setActiveTab('transactions')}
               />
 
-              {/* Agent Console Preview */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-8">
-                  <AgentConsole
-                    logs={agentLogs}
-                    onRefreshLogs={loadAllData}
-                  />
+              {/* 3-Step Autonomous Protocol Summary (Clean, uncluttered overview) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                <div className="p-6 rounded-2xl bg-[#090909] border border-white/[0.08] space-y-3 shadow-xl hover:border-white/[0.15] transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="editorial-bracket">(01)</span>
+                    <span className="text-[10px] font-mono text-[#ff4500] uppercase tracking-wider font-bold">
+                      INGEST & DIAGNOSE
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-white">
+                    Silent Webhook Intercept
+                  </h3>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    Captures declined checkout intents across Razorpay in under 50ms and classifies root failure vectors with ML diagnostic scoring.
+                  </p>
                 </div>
 
-                <div className="lg:col-span-4 space-y-6">
-                  <div className="p-6 rounded-2xl bg-[#0e0e0e] hairline-border space-y-4 font-mono text-xs">
-                    <div className="flex items-center space-x-2 text-[#ff4500]">
-                      <Zap className="w-4 h-4" />
-                      <span className="font-bold uppercase tracking-wider">How ReviveAI Works</span>
-                    </div>
+                <div className="p-6 rounded-2xl bg-[#090909] border border-white/[0.08] space-y-3 shadow-xl hover:border-white/[0.15] transition-all">
+                  <div className="flex items-center justify-between">
+                    <span className="editorial-bracket">(02)</span>
+                    <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider font-bold">
+                      GUARDRAIL & STRATEGY
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-base text-white">
+                    Policy-Enforced Routing
+                  </h3>
+                  <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                    Selects optimal Smart Retry or VIP WhatsApp link without violating retry frequency ceilings or customer margin caps.
+                  </p>
+                </div>
 
-                    <p className="text-zinc-400 leading-relaxed font-sans text-xs">
-                      ReviveAI sits atop Razorpay webhooks, ingests declines, runs real-time ML diagnostic scoring, and dynamically selects the highest-ROI salvage vector.
+                <div className="p-6 rounded-2xl bg-[#090909] border border-white/[0.08] space-y-4 shadow-xl hover:border-white/[0.15] transition-all flex flex-col justify-between">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="editorial-bracket">(03)</span>
+                      <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider font-bold">
+                        CLOSED-LOOP SETTLEMENT
+                      </span>
+                    </div>
+                    <h3 className="font-display font-bold text-base text-white">
+                      Instant Revenue Salvage
+                    </h3>
+                    <p className="text-xs text-zinc-400 font-sans leading-relaxed">
+                      Customer resolves payment via dynamic Razorpay link. Real-time webhook updates immutable financial audit ledgers.
                     </p>
-
-                    <div className="space-y-2 pt-2 hairline-t">
-                      <div className="flex items-center justify-between text-zinc-300">
-                        <span>• Razorpay Smart Retries</span>
-                        <span className="text-emerald-400 font-bold">78% Salvage</span>
-                      </div>
-                      <div className="flex items-center justify-between text-zinc-300">
-                        <span>• Dynamic Payment Links</span>
-                        <span className="text-razor-blue font-bold">64% Salvage</span>
-                      </div>
-                      <div className="flex items-center justify-between text-zinc-300">
-                        <span>• WhatsApp Deep-links</span>
-                        <span className="text-purple-400 font-bold">72% Salvage</span>
-                      </div>
-                    </div>
                   </div>
 
-                  <div className="p-6 rounded-2xl bg-gradient-to-br from-[#ff4500]/20 to-[#080808] border border-[#ff4500]/30 space-y-3 font-mono text-xs">
-                    <span className="editorial-bracket">(04)</span>
-                    <h4 className="font-display font-bold text-sm text-white uppercase">
-                      Live Customer Simulator
-                    </h4>
-                    <p className="text-zinc-400 font-sans text-xs">
-                      Experience how end customers resolve payments through generated dynamic Razorpay links.
-                    </p>
+                  <div className="pt-2 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono">
+                    <button
+                      onClick={() => setActiveTab('agent')}
+                      className="text-[#ff4500] hover:text-white font-bold inline-flex items-center space-x-1 transition-colors cursor-pointer"
+                    >
+                      <span>AGENT STUDIO →</span>
+                    </button>
                     <button
                       onClick={() => setActiveTab('portal')}
-                      className="w-full py-2.5 rounded bg-white text-black font-bold text-xs tracking-wider uppercase flex items-center justify-center space-x-1 hover:bg-zinc-200 transition-colors"
+                      className="text-zinc-400 hover:text-white inline-flex items-center space-x-1 transition-colors cursor-pointer"
                     >
-                      <span>Open Customer Portal</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <span>TEST SIMULATOR →</span>
                     </button>
                   </div>
                 </div>
@@ -479,6 +538,44 @@ export default function App() {
 
             </div>
 
+          </div>
+        )}
+
+        {/* TAB: TRANSACTIONS & RECOVERY LEDGER (DEDICATED FULL-SCREEN VIEW) */}
+        {activeTab === 'transactions' && (
+          <div className="max-w-7xl mx-auto px-6 sm:px-12 py-10 space-y-8 animate-in fade-in duration-300">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/[0.08] pb-6">
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="editorial-bracket">(01)</span>
+                  <h2 className="font-display font-black text-2xl sm:text-3xl tracking-tight text-white uppercase">
+                    Financial Transactions & Recovery Stream
+                  </h2>
+                </div>
+                <p className="text-xs text-zinc-400 font-mono mt-1">
+                  Complete audit log of ingested Razorpay declines, ML diagnostics, and real-time intervention statuses
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-3">
+                <button
+                  onClick={handleTriggerBatch}
+                  disabled={isBatchRunning}
+                  className="px-4 py-2 rounded-xl bg-[#ff4500] text-black font-mono font-bold text-xs uppercase tracking-wider hover:bg-[#ff571a] transition-all disabled:opacity-50 cursor-pointer shadow-lg shadow-[#ff4500]/20"
+                >
+                  {isBatchRunning ? 'Executing AI Sweep...' : '⚡ Sweep & Recover All'}
+                </button>
+              </div>
+            </div>
+
+            <TransactionTable
+              transactions={transactions}
+              onRecoverSingle={handleRecoverSingle}
+              onOpenPortal={handleOpenPortal}
+              onOpenAudit={(t) => setAuditTxn(t)}
+              isRecoveringId={recoveringId}
+              isCompact={false}
+            />
           </div>
         )}
 
@@ -511,6 +608,13 @@ export default function App() {
               logs={agentLogs}
               onRefreshLogs={loadAllData}
             />
+          </div>
+        )}
+
+        {/* TAB: HOW IT WORKS */}
+        {activeTab === 'how-it-works' && (
+          <div className="max-w-7xl mx-auto px-6 sm:px-12 py-10">
+            <HowItWorks />
           </div>
         )}
 

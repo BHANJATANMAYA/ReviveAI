@@ -44,3 +44,5 @@ reviveai.db
 *.swo
 .DS_Store
 Thumbs.db
+
+.agents
